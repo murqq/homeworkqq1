@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class RadioTest {
+
     @Test
     public void setCurrentStation_ValidStation_Success() {
         Radio radio = new Radio();
@@ -107,39 +108,109 @@ public class RadioTest {
     }
 
     @Test
-    public void setCurrentStation_MinStationValue_Success() {
+    public void radioConstructor_DefaultTotalStations() {
         Radio radio = new Radio();
-        radio.setCurrentStation(0);
+        int totalStations = radio.getTotalStations();
+        Assertions.assertEquals(10, totalStations);
+    }
+
+    @Test
+    public void radioConstructor_CustomTotalStations() {
+        Radio radio = new Radio(20);
+        int totalStations = radio.getTotalStations();
+        Assertions.assertEquals(20, totalStations);
+    }
+
+    @Test
+    public void setCurrentStation_OutOfBounds_NoChange() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(10);
         int currentStation = radio.getCurrentStation();
         Assertions.assertEquals(0, currentStation);
     }
 
     @Test
-    public void setCurrentStation_MaxStationValue_Success() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(9);
+    public void setCurrentStation_ValidStationWithinTotalStations_Success() {
+        Radio radio = new Radio(10);
+        radio.setCurrentStation(5);
         int currentStation = radio.getCurrentStation();
-        Assertions.assertEquals(9, currentStation);
+        Assertions.assertEquals(5, currentStation);
     }
 
     @Test
-    public void setCurrentStation_NegativeStationValue_NoChange() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(-1);
-        int currentStation = radio.getCurrentStation();
-        Assertions.assertEquals(0, currentStation);
-    }
-
-    @Test
-    public void setCurrentStation_InvalidStationValue_NoChange() {
-        Radio radio = new Radio();
+    public void setCurrentStation_InvalidStationWithinTotalStations_NoChange() {
+        Radio radio = new Radio(10);
         radio.setCurrentStation(15);
         int currentStation = radio.getCurrentStation();
         Assertions.assertEquals(0, currentStation);
     }
 
     @Test
-    public void setVolume_MinVolumeValue_Success() {
+    public void setCurrentStation_ValidStationWithinTotalStations_CustomTotalStations_Success() {
+        Radio radio = new Radio(20);
+        radio.setCurrentStation(15);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(15, currentStation);
+    }
+
+    @Test
+    public void setCurrentStation_InvalidStationWithinTotalStations_CustomTotalStations_NoChange() {
+        Radio radio = new Radio(20);
+        radio.setCurrentStation(25);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(0, currentStation);
+    }
+
+    @Test
+    public void setVolume_ValidVolumeWithinRange_Success() {
+        Radio radio = new Radio();
+        radio.setVolume(50);
+        int volume = radio.getVolume();
+        Assertions.assertEquals(50, volume);
+    }
+
+    @Test
+    public void setVolume_InvalidVolumeWithinRange_NoChange() {
+        Radio radio = new Radio();
+        radio.setVolume(150);
+        int volume = radio.getVolume();
+        Assertions.assertEquals(0, volume);
+    }
+
+    @Test
+    public void setCurrentStation_ValidStationAtLowerBound_Success() {
+        Radio radio = new Radio(10);
+        radio.setCurrentStation(0);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(0, currentStation);
+    }
+
+    @Test
+    public void setCurrentStation_ValidStationAtUpperBound_Success() {
+        Radio radio = new Radio(10);
+        radio.setCurrentStation(9);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(9, currentStation);
+    }
+
+    @Test
+    public void setCurrentStation_InvalidStationBelowLowerBound_NoChange() {
+        Radio radio = new Radio(10);
+        radio.setCurrentStation(-1);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(0, currentStation);
+    }
+
+    @Test
+    public void setCurrentStation_InvalidStationAboveUpperBound_NoChange() {
+        Radio radio = new Radio(10);
+        radio.setCurrentStation(10);
+        int currentStation = radio.getCurrentStation();
+        Assertions.assertEquals(0, currentStation);
+    }
+
+    @Test
+    public void setVolume_ValidVolumeAtLowerBound_Success() {
         Radio radio = new Radio();
         radio.setVolume(0);
         int volume = radio.getVolume();
@@ -147,7 +218,7 @@ public class RadioTest {
     }
 
     @Test
-    public void setVolume_MaxVolumeValue_Success() {
+    public void setVolume_ValidVolumeAtUpperBound_Success() {
         Radio radio = new Radio();
         radio.setVolume(100);
         int volume = radio.getVolume();
@@ -155,7 +226,7 @@ public class RadioTest {
     }
 
     @Test
-    public void setVolume_NegativeVolumeValue_NoChange() {
+    public void setVolume_InvalidVolumeBelowLowerBound_NoChange() {
         Radio radio = new Radio();
         radio.setVolume(-1);
         int volume = radio.getVolume();
@@ -163,9 +234,9 @@ public class RadioTest {
     }
 
     @Test
-    public void setVolume_InvalidVolumeValue_NoChange() {
+    public void setVolume_InvalidVolumeAboveUpperBound_NoChange() {
         Radio radio = new Radio();
-        radio.setVolume(150);
+        radio.setVolume(101);
         int volume = radio.getVolume();
         Assertions.assertEquals(0, volume);
     }
